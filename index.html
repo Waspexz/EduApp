@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aplicación Educativa</title>
+</head>
+<body>
+    <h1>Registro de Usuario</h1>
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Nombre de usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <input type="number" id="year" placeholder="Año" required>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <h1>Inicio de Sesión</h1>
+    <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+
+    <h1>Agregar Nota</h1>
+    <form id="gradeForm">
+        <input type="number" id="user_id" placeholder="ID de Usuario" required>
+        <input type="text" id="subject" placeholder="Materia" required>
+        <input type="number" id="grade" placeholder="Nota" required>
+        <button type="submit">Agregar Nota</button>
+    </form>
+
+    <h1>Ver Promedio</h1>
+    <form id="averageForm">
+        <input type="number" id="averageUserId" placeholder="ID de Usuario" required>
+        <button type="submit">Ver Promedio</button>
+    </form>
+
+    <div id="averageResult"></div>
+
+    <script>
+        document.getElementById('registerForm').onsubmit = function(event) {
+            event.preventDefault();
+            const data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                year: document.getElementById('year').value
+            };
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.text()).then(data => {
+                alert(data);
+            });
+        };
+
+        document.getElementById('loginForm').onsubmit = function(event) {
+            event.preventDefault();
+            const data = {
+                username: document.getElementById('loginUsername').value,
+                password: document.getElementById('loginPassword').value
+            };
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.text()).then(data => {
+                alert(data);
+            });
+        };
+
+        document.getElementById('gradeForm').onsubmit = function(event) {
+            event.preventDefault();
+            const data = {
+                user_id: document.getElementById('user_id').value,
+                subject: document.getElementById('subject').value,
+                grade: document.getElementById('grade').value
+            };
+            fetch('/add-grade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.text()).then(data => {
+                alert(data);
+            });
+        };
+
+        document.getElementById('averageForm').onsubmit = function(event) {
+            event.preventDefault();
+            const user_id = document.getElementById('averageUserId').value;
+            fetch(`/average/${user_id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('averageResult').innerText = 'Promedio: ' + data[0].average;
+                });
+        };
+    </script>
+</body>
+</html>
